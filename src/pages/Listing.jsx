@@ -6,6 +6,10 @@ import { db } from "../firebase.config";
 import shareIcon from "../assets/svg/shareIcon.svg";
 import Spinner from "../components/Spinner";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import SwiperCore, {Navigation, Pagination, Scrollbar, A11y} from 'swiper';
+import {Swiper, SwiperSlide} from "swiper/react";
+import 'swiper/swiper-bundle.css'
+SwiperCore.use([Navigation, Pagination, Scrollbar, A11y])
 
 function Listing() {
   const [listing, setListing] = useState(null);
@@ -17,15 +21,15 @@ function Listing() {
   const auth = getAuth();
 
   useEffect(() => {
-    console.log("Check 2");
+    
 
     const fetchListing = async () => {
       const docRef = doc(db, "listings", params.listingId);
       const docSnap = await getDoc(docRef);
-      console.log("Check if working message 3");
+      
 
       if (docSnap.exists()) {
-        console.log(docSnap.data());
+        
         setListing(docSnap.data());
         setLoading(false);
       }
@@ -40,6 +44,27 @@ function Listing() {
 
   return (
     <main>
+        <Swiper
+      // per the Slider docs, declare the modules here for this Swiper component
+      modules={[Navigation, Pagination, Scrollbar, A11y]}
+      slidesPerView={1}
+      navigation
+      pagination={{ clickable: true }}
+      scrollbar={{ draggable: true }}
+    >
+      {listing.imgUrls.map( (url, index) => (
+        <SwiperSlide key={index}>
+          <div style={{
+            background: `url(${listing.imgUrls[index]}) center no-repeat`,
+            backgroundSize: 'cover',
+            minHeight: '20rem'
+          }}
+          className='swiperSlideDiv'
+          ></div>
+        </SwiperSlide>
+      ))} 
+      </Swiper>
+
       <div
         className="shareIconDiv"
         onClick={() => {
